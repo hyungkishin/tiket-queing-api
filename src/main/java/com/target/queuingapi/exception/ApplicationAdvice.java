@@ -17,4 +17,5 @@ public class ApplicationAdvice {
 
     public record ServerExceptionResponse(String code, String reason) {
     }
+
 }

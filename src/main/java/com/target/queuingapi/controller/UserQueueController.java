@@ -1,8 +1,11 @@
 package com.target.queuingapi.controller;
 
+import com.target.queuingapi.dto.AllowUserResponse;
+import com.target.queuingapi.dto.AllowedUserResponse;
 import com.target.queuingapi.dto.RegisterUserResponse;
 import com.target.queuingapi.service.UserQueueService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -22,6 +25,20 @@ public class UserQueueController {
                                                    @RequestParam(name = "user_id") Long userId) {
         return userQueueService.registerWaitQueue(queue, userId)
                 .map(RegisterUserResponse::new);
+    }
+
+    @PostMapping("/allow")
+    public Mono<AllowUserResponse> allowUser(@RequestParam(name = "queue", defaultValue = "default") String queue,
+                                             @RequestParam(name = "count") Long count) {
+        return userQueueService.allowUser(queue, count)
+                .map(allowed -> new AllowUserResponse(count, allowed));
+    }
+
+    @GetMapping("/allowed")
+    public Mono<AllowedUserResponse> isAllowedUser(@RequestParam(name = "queue", defaultValue = "default") String queue,
+                                 @RequestParam(name = "user_id") Long userId) {
+        return userQueueService.isAllowed(queue, userId)
+                .map(AllowedUserResponse::new);
     }
 
 }
