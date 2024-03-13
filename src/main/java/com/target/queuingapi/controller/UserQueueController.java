@@ -2,6 +2,7 @@ package com.target.queuingapi.controller;
 
 import com.target.queuingapi.dto.AllowUserResponse;
 import com.target.queuingapi.dto.AllowedUserResponse;
+import com.target.queuingapi.dto.RankNumberResponse;
 import com.target.queuingapi.dto.RegisterUserResponse;
 import com.target.queuingapi.service.UserQueueService;
 import lombok.RequiredArgsConstructor;
@@ -41,4 +42,10 @@ public class UserQueueController {
                 .map(AllowedUserResponse::new);
     }
 
+    @GetMapping("/rank")
+    public Mono<RankNumberResponse> getRankUser(@RequestParam(name = "queue", defaultValue = "default") String queue,
+                                                   @RequestParam(name = "user_id") Long userId) {
+        return userQueueService.getRank(queue, userId)
+                .map(RankNumberResponse::new);
+    }
 }

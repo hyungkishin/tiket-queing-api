@@ -29,6 +29,7 @@ class UserQueueServiceTest {
         // data 를 테스트가 시작하기 전에 비워준다.
         redisConnection.serverCommands().flushAll().subscribe();
     }
+
     @Test
     void registerWaitQueue() {
         StepVerifier.create(userQueueService.registerWaitQueue("default", 100L))
@@ -65,8 +66,8 @@ class UserQueueServiceTest {
     @Test
     void allowUser() {
         StepVerifier.create(userQueueService.registerWaitQueue("default", 100L)
-                .then(userQueueService.registerWaitQueue("default", 101L))
-                .then(userQueueService.registerWaitQueue("default", 102L))
+                        .then(userQueueService.registerWaitQueue("default", 101L))
+                        .then(userQueueService.registerWaitQueue("default", 102L))
                         .then(userQueueService.allowUser("default", 2L)))
                 .expectNext(2L)
                 .verifyComplete();
@@ -118,6 +119,26 @@ class UserQueueServiceTest {
                         .then(userQueueService.isAllowed("default", 100L))
                 )
                 .expectNext(true)
+                .verifyComplete();
+    }
+
+    @Test
+    void getRank() {
+        StepVerifier.create(userQueueService.registerWaitQueue("default", 100L)
+                        .then(userQueueService.getRank("default", 100L))
+                ).expectNext(1L)
+                .verifyComplete();
+
+        StepVerifier.create(userQueueService.registerWaitQueue("default", 101L)
+                        .then(userQueueService.getRank("default", 101L))
+                ).expectNext(2L)
+                .verifyComplete();
+    }
+
+    @Test
+    void emptyRank() {
+        StepVerifier.create(userQueueService.getRank("default", 100L))
+                .expectNext(-1L)
                 .verifyComplete();
     }
 
