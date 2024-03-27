@@ -43,17 +43,21 @@
             .then(response => response.json())
             .then(data => {
                 if(data.rank < 0) {
-                    document.querySelector('#number').innerHTML = 0;
-                    document.querySelector('#updated').innerHTML = new Date();
+                    fetch('/api/v1/queue/touch?'+ queryParam)
+                        .then(response => {
+                            document.querySelector('#number').innerHTML = 0;
+                            document.querySelector('#updated').innerHTML = new Date();
 
-                    const newUrl = window.location.origin + window.location.pathname + window.location.search;
-                    window.location.href = newUrl;
-                    return;
+                            const newUrl = window.location.origin + window.location.pathname + window.location.search
+                            window.location.href = newUrl
+                        })
+                        .catch(e => console.error(e))
+                    return
                 }
-                document.querySelector('#number').innerHTML = data.rank;
-                document.querySelector('#updated').innerHTML = new Date();
+                document.querySelector('#number').innerHTML = data.rank
+                document.querySelector('#updated').innerHTML = new Date()
             })
-            .catch(error => console.error(error));
+            .catch(error => console.error(error))
     }
 
     setInterval(fetchWaitingRank, 3000);
