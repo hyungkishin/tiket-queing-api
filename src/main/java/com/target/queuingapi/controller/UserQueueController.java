@@ -60,7 +60,7 @@ public class UserQueueController {
         return Mono.defer(() -> userQueueService.generateToken(queue, userId))
                 .map(token -> {
                     exchange.getResponse().addCookie(
-                            ResponseCookie.from("user-queue-%s- token".formatted(queue), token)
+                            ResponseCookie.from("user-queue-%s-token".formatted(queue), token)
                                     .maxAge(Duration.ofSeconds(300))
                                     .path("/")
                                     .build()
